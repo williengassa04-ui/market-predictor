@@ -120,6 +120,7 @@ label{display:block;margin:12px 0 6px;color:#b9c8dc}
 <script>
 const API_BASE = "https://market-predictor-api.williengassa04.workers.dev";
 
+
 async function loadQuotes() {
   const status = document.getElementById("quote-status");
   status.textContent = "Récupération des données en cours...";
@@ -130,6 +131,8 @@ async function loadQuotes() {
     { symbol: "DIA", id: "dia" }
   ];
 
+  let errors = [];
+
   for (const market of markets) {
     try {
       const response = await fetch(
@@ -139,7 +142,9 @@ async function loadQuotes() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Erreur de connexion");
+        throw new Error(
+          data.details || data.error || "Erreur inconnue"
+        );
       }
 
       document.getElementById(`${market.id}-price`).textContent =
@@ -152,14 +157,15 @@ async function loadQuotes() {
       document.getElementById(`${market.id}-change`).textContent =
         "Données indisponibles";
 
-      status.textContent = "Erreur : " + error.message;
+      errors.push(market.symbol + " : " + error.message);
     }
   }
 
-  status.textContent =
-    "Dernière vérification : " + new Date().toLocaleTimeString("fr-CA");
+  status.textContent = errors.length
+    ? "Erreurs : " + errors.join(" | ")
+    : "Dernière vérification : " + new Date().toLocaleTimeString("fr-CA");
 }
-  
+
 
 function showTab(id,button){
 document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
