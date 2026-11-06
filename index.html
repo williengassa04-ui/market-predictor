@@ -51,13 +51,25 @@ label{display:block;margin:12px 0 6px;color:#b9c8dc}
 <h2>Vue d'ensemble des marchés</h2>
 <p class="status">● Version de développement — données réelles à connecter</p>
 <div class="grid">
-<div class="card"><small>S&P 500</small><div class="value">—</div><div class="muted">En attente des données</div></div>
-<div class="card"><small>NASDAQ</small><div class="value">—</div><div class="muted">En attente des données</div></div>
-<div class="card"><small>DOW JONES</small><div class="value">—</div><div class="muted">En attente des données</div></div>
-<div class="card"><small>S&P/TSX</small><div class="value">—</div><div class="muted">En attente des données</div></div>
-<div class="card"><small>DAX</small><div class="value">—</div><div class="muted">En attente des données</div></div>
-<div class="card"><small>NIKKEI 225</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+  <div class="card">
+    <small>S&P 500 (ETF SPY)</small>
+    <div class="value" id="spy-price">—</div>
+    <div class="muted" id="spy-change">En attente</div>
+  </div>
+  <div class="card">
+    <small>NASDAQ (ETF QQQ)</small>
+    <div class="value" id="qqq-price">—</div>
+    <div class="muted" id="qqq-change">En attente</div>
+  </div>
+  <div class="card">
+    <small>DOW JONES (ETF DIA)</small>
+    <div class="value" id="dia-price">—</div>
+    <div class="muted" id="dia-change">En attente</div>
+  </div>
 </div>
+<button class="primary" onclick="loadQuotes()">Actualiser les marchés</button>
+<p class="muted" id="quote-status">Données non encore chargées.</p>
+
 <div class="panel">
 <h2>Objectif du système</h2>
 <p>Suivre les marchés mondiaux, analyser les facteurs économiques et techniques, puis produire des scénarios probabilistes à court, moyen et long terme.</p>
@@ -106,6 +118,48 @@ label{display:block;margin:12px 0 6px;color:#b9c8dc}
 </section>
 </main>
 
+const API_BASE = "https://market-predictor-api.williengassa04.workers.dev";
+
+async function loadQuotes() {
+  const status = document.getElementById("quote-status");
+  status.textContent = "Récupération des données en cours...";
+
+  const markets = [
+    { symbol: "SPY", id: "spy" },
+    { symbol: "QQQ", id: "qqq" },
+    { symbol: "DIA", id: "dia" }
+  ];
+
+  for (const market of markets) {
+    try {
+      const response = await fetch(
+        `${API_BASE}/quote?symbol=${market.symbol}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erreur de connexion");
+      }
+
+      document.getElementById(`${market.id}-price`).textContent =
+        "$" + data.price.toFixed(2);
+
+      document.getElementById(`${market.id}-change`).textContent =
+        `${data.change >= 0 ? "+" : ""}${data.change.toFixed(2)} USD (${data.changePercent})`;
+
+    } catch (error) {
+      document.getElementById(`${market.id}-change`).textContent =
+        "Données indisponibles";
+
+      status.textContent = "Erreur : " + error.message;
+    }
+  }
+
+  status.textContent =
+    "Dernière vérification : " + new Date().toLocaleTimeString("fr-CA");
+}
+  
 <script>
 function showTab(id,button){
 document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
