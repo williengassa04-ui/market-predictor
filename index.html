@@ -4,210 +4,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101827">
-<title>Market Predictor</title>
+<title>Market Predictor V2</title>
 <style>
-:root{--bg:#0b1220;--panel:#151f30;--panel2:#1c2940;--text:#edf3fc;--muted:#9aabc2;--blue:#58a6ff;--green:#36c98f;--red:#ff727c;--gold:#f3c969}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
-header{padding:22px 4%;background:#101a2b;border-bottom:1px solid #29364b;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-h1{margin:0;font-size:27px;letter-spacing:.5px}
-h1 span{color:var(--blue)}
-header p{color:var(--muted);margin:7px 0 0}
-main{max-width:1500px;margin:auto;padding:22px 4%}
-nav{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:22px}
-button,.tab{border:0;border-radius:9px;padding:11px 16px;background:var(--panel2);color:var(--text);cursor:pointer;font-weight:600}
-button:hover,.tab.active{background:var(--blue);color:#071322}
-.primary{background:var(--blue);color:#071322}
-.danger{background:#542b38;color:#fff}
-.panel{background:var(--panel);border:1px solid #29364b;border-radius:13px;padding:20px;margin-bottom:18px}
-h2{font-size:19px;margin:0 0 17px}
-h3{font-size:16px;margin:0 0 10px}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
-.stat{background:var(--panel2);padding:17px;border-radius:10px}
-.stat small{color:var(--muted)}
-.stat strong{display:block;font-size:25px;margin-top:9px}
-.muted{color:var(--muted)}
-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
-input,select,textarea{width:100%;padding:11px;background:#0d1727;border:1px solid #35445c;border-radius:8px;color:var(--text);font:inherit}
-textarea{min-height:85px;resize:vertical}
-.full{grid-column:1/-1}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
-table{width:100%;border-collapse:collapse;min-width:850px}
-th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #29364b;font-size:13px}
-th{color:var(--muted)}
-.tablewrap{overflow-x:auto}
-.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--gold)}
-.hidden{display:none!important}
-.tag{padding:4px 7px;border-radius:6px;background:#263750;font-size:12px}
-footer{color:var(--muted);font-size:12px;text-align:center;padding:25px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}form{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.grid,form{grid-template-columns:1fr}.full{grid-column:auto}header{align-items:flex-start}}
+body{margin:0;background:#0b1220;color:#e8eef8;font-family:Arial,sans-serif}
+header{padding:22px 28px;background:#111d31;border-bottom:1px solid #263650}
+h1{margin:0;font-size:27px}
+header p{color:#9eafc8;margin:7px 0 0}
+nav{display:flex;gap:10px;padding:15px 24px;overflow:auto}
+nav button{background:#1b2a42;color:#dce8fa;border:1px solid #344762;padding:12px 18px;border-radius:9px;white-space:nowrap}
+nav button.active{background:#2563eb;border-color:#2563eb;color:white}
+main{padding:10px 24px 30px;max-width:1400px;margin:auto}
+h2{font-size:21px;margin-top:18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:14px}
+.card{background:#142239;border:1px solid #263b59;border-radius:12px;padding:18px}
+.card small{color:#9eafc8}
+.value{font-size:25px;font-weight:bold;margin:12px 0 5px}
+.muted{color:#9eafc8;font-size:13px}
+.panel{background:#142239;border:1px solid #263b59;border-radius:12px;padding:20px;margin-top:18px}
+.status{color:#fbbf24}
+button,input,select{font:inherit}
+input,select{background:#0b1729;color:white;border:1px solid #405573;border-radius:7px;padding:10px}
+label{display:block;margin:12px 0 6px;color:#b9c8dc}
+.primary{background:#2563eb;color:white;border:0;border-radius:8px;padding:12px 18px;margin-top:15px}
+.tab{display:none}
+.tab.active{display:block}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,minmax(130px,1fr))}main{padding:8px 12px}header{padding:18px}}
 </style>
 </head>
 <body>
 <header>
- <div><h1>MARKET <span>PREDICTOR</span></h1><p>Anticiper. Mesurer. Apprendre. Progresser.</p></div>
- <div class="muted" id="today"></div>
+<h1>MARKET PREDICTOR <span style="color:#60a5fa">V2</span></h1>
+<p>Analyse des marchés mondiaux · Tableau de bord stratégique</p>
 </header>
-<main>
+
 <nav>
- <button class="tab active" data-page="dashboard">Tableau de bord</button>
- <button class="tab" data-page="new">Nouvelle prévision</button>
- <button class="tab" data-page="journal">Journal</button>
- <button class="tab" data-page="evaluation">Évaluation</button>
+<button class="active" onclick="showTab('dashboard',this)">Tableau de bord</button>
+<button onclick="showTab('analysis',this)">Analyse technique</button>
+<button onclick="showTab('forecast',this)">Prévisions</button>
+<button onclick="showTab('macro',this)">Macro & géopolitique</button>
+<button onclick="showTab('journal',this)">Journal</button>
 </nav>
 
-<section id="dashboard">
- <div class="grid">
-  <div class="stat"><small>Prévisions enregistrées</small><strong id="total">0</strong></div>
-  <div class="stat"><small>Prévisions évaluées</small><strong id="evaluated">0</strong></div>
-  <div class="stat"><small>Précision directionnelle</small><strong id="accuracy">—</strong></div>
-  <div class="stat"><small>Prévisions à évaluer</small><strong id="pending">0</strong></div>
- </div>
- <div class="panel" style="margin-top:18px">
-  <h2>Notre univers de marchés</h2>
-  <p class="muted">Les actifs que nous voulons analyser et prévoir.</p>
-  <div class="grid">
-   <div class="stat"><h3>Actions américaines</h3><small>S&P 500 · Nasdaq 100</small></div>
-   <div class="stat"><h3>Actions mondiales</h3><small>Europe · Japon · Chine</small></div>
-   <div class="stat"><h3>Matières premières</h3><small>Or · Pétrole Brent</small></div>
-   <div class="stat"><h3>Obligations</h3><small>Trésor américain 10 ans</small></div>
-  </div>
- </div>
- <div class="panel">
-  <h2>Dernières prévisions</h2>
-  <div id="recent" class="muted">Aucune prévision pour le moment.</div>
- </div>
- <div class="panel">
-  <h2>Notre méthode d'analyse</h2>
-  <div class="grid">
-   <div><h3>Fondamentale</h3><small class="muted">Bénéfices, valorisations, entreprises.</small></div>
-   <div><h3>Technique</h3><small class="muted">Tendances, volumes, supports et résistances.</small></div>
-   <div><h3>Macroéconomique</h3><small class="muted">Inflation, taux, emploi, banques centrales.</small></div>
-   <div><h3>Sentiment et statistiques</h3><small class="muted">Positionnement, probabilités et scénarios.</small></div>
-  </div>
- </div>
+<main>
+<section id="dashboard" class="tab active">
+<h2>Vue d'ensemble des marchés</h2>
+<p class="status">● Version de développement — données réelles à connecter</p>
+<div class="grid">
+<div class="card"><small>S&P 500</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+<div class="card"><small>NASDAQ</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+<div class="card"><small>DOW JONES</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+<div class="card"><small>S&P/TSX</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+<div class="card"><small>DAX</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+<div class="card"><small>NIKKEI 225</small><div class="value">—</div><div class="muted">En attente des données</div></div>
+</div>
+<div class="panel">
+<h2>Objectif du système</h2>
+<p>Suivre les marchés mondiaux, analyser les facteurs économiques et techniques, puis produire des scénarios probabilistes à court, moyen et long terme.</p>
+</div>
 </section>
 
-<section id="new" class="hidden">
- <div class="panel">
-  <h2>Enregistrer une nouvelle prévision</h2>
-  <p class="muted">Chaque prévision est conservée avec sa date de création et sa date d'échéance.</p>
-  <form id="forecastForm">
-   <div><label>Marché / actif</label>
-    <select id="asset">
-     <option>S&P 500</option><option>Nasdaq 100</option><option>STOXX Europe 600</option><option>Nikkei 225</option><option>Shanghai Composite</option><option>Actions mondiales</option><option>Or (XAU/USD)</option><option>Pétrole Brent</option><option>Trésor américain 10 ans</option><option>Autre</option>
-    </select>
-   </div>
-   <div><label>Horizon</label><select id="horizon"><option value="1">1 jour</option><option value="7">7 jours</option><option value="30">30 jours</option></select></div>
-   <div><label>Valeur de référence</label><input id="reference" type="number" step="any" placeholder="Ex. 6800" required></div>
-   <div><label>Direction anticipée</label><select id="direction"><option value="up">Hausse</option><option value="flat">Stabilité</option><option value="down">Baisse</option></select></div>
-   <div><label>Variation anticipée (%)</label><input id="variation" type="number" step="any" placeholder="Ex. 1.5" required></div>
-   <div><label>Confiance globale (%)</label><input id="confidence" type="number" min="0" max="100" value="60" required></div>
-   <div><label>Probabilité de hausse (%)</label><input id="pup" type="number" min="0" max="100" value="40" required></div>
-   <div><label>Probabilité de stabilité (%)</label><input id="pflat" type="number" min="0" max="100" value="30" required></div>
-   <div><label>Probabilité de baisse (%)</label><input id="pdown" type="number" min="0" max="100" value="30" required></div>
-   <div class="full"><label>Analyse et justification</label><textarea id="thesis" placeholder="Facteurs économiques, techniques, fondamentaux, sentiment du marché, risques..."></textarea></div>
-   <div class="full"><label>Sources consultées</label><input id="source" placeholder="Ex. données économiques, rapports, indicateurs, actualités..."></div>
-   <div class="full actions"><button class="primary" type="submit">Enregistrer la prévision</button></div>
-  </form>
-  <p class="muted" style="font-size:12px">Les trois probabilités doivent totaliser exactement 100 %.</p>
- </div>
+<section id="analysis" class="tab">
+<h2>Analyse technique</h2>
+<div class="grid">
+<div class="card"><small>RSI (14)</small><div class="value">—</div><div class="muted">À calculer</div></div>
+<div class="card"><small>MACD</small><div class="value">—</div><div class="muted">À calculer</div></div>
+<div class="card"><small>Moyennes mobiles</small><div class="value">—</div><div class="muted">À calculer</div></div>
+</div>
+<div class="panel">Les indicateurs seront calculés à partir des données de marché historiques et actualisées.</div>
 </section>
 
-<section id="journal" class="hidden">
- <div class="panel">
-  <h2>Journal des prévisions</h2>
-  <div class="actions"><button id="export">Exporter en CSV</button></div>
-  <div class="tablewrap"><table><thead><tr><th>Date</th><th>Marché</th><th>Horizon</th><th>Référence</th><th>Direction</th><th>Variation prévue</th><th>Échéance</th><th>Statut</th></tr></thead><tbody id="journalRows"></tbody></table></div>
-  <p id="emptyJournal" class="muted">Le journal est vide.</p>
- </div>
+<section id="forecast" class="tab">
+<h2>Moteur de prévisions</h2>
+<div class="panel">
+<label for="market">Marché à analyser</label>
+<select id="market">
+<option>S&P 500</option><option>NASDAQ</option><option>DOW JONES</option><option>TSX</option><option>DAX</option><option>NIKKEI 225</option>
+</select>
+<label for="horizon">Horizon de prévision</label>
+<select id="horizon">
+<option>1 jour</option><option>3 jours</option><option>7 jours</option><option>1 mois</option><option>3 mois</option><option>6 mois</option><option>12 mois</option><option>24 mois</option>
+</select>
+<button class="primary" onclick="alert('Le moteur de prévision sera activé après la connexion des données et des modèles.')">Lancer l'analyse</button>
+</div>
 </section>
 
-<section id="evaluation" class="hidden">
- <div class="panel">
-  <h2>Évaluer une prévision</h2>
-  <p class="muted">Lorsque l'échéance est atteinte, saisis la valeur réelle observée pour mesurer la précision.</p>
-  <div id="evaluationList" class="muted">Aucune prévision à évaluer.</div>
- </div>
- <div class="panel">
-  <h2>Résultats des évaluations</h2>
-  <div class="tablewrap"><table><thead><tr><th>Marché</th><th>Horizon</th><th>Variation prévue</th><th>Variation réelle</th><th>Résultat directionnel</th></tr></thead><tbody id="resultsRows"></tbody></table></div>
- </div>
+<section id="macro" class="tab">
+<h2>Analyse macroéconomique et géopolitique</h2>
+<div class="grid">
+<div class="card"><small>Banques centrales</small><p>À surveiller : Fed, Banque du Canada, BCE et Banque du Japon.</p></div>
+<div class="card"><small>Obligations</small><p>Suivi des taux américains à 2, 5, 10 et 30 ans.</p></div>
+<div class="card"><small>Devises et matières premières</small><p>Dollar américain, pétrole, or et principales devises.</p></div>
+</div>
+</section>
+
+<section id="journal" class="tab">
+<h2>Journal de suivi</h2>
+<div class="panel">
+<p>Les prévisions, leurs dates et leurs résultats seront conservés ici pour mesurer la précision du modèle.</p>
+</div>
 </section>
 </main>
-<footer>MARKET PREDICTOR · Version 1.0 · Les prévisions sont des scénarios, pas des garanties de rendement.</footer>
 
 <script>
-const KEY="marketPredictorV1";
-let forecasts=JSON.parse(localStorage.getItem(KEY)||"[]");
-const $=id=>document.getElementById(id);
-const save=()=>localStorage.setItem(KEY,JSON.stringify(forecasts));
-const fmt=n=>Number(n).toLocaleString("fr-CA",{maximumFractionDigits:4});
-const date=d=>new Date(d).toLocaleDateString("fr-CA");
-const dir=d=>d==="up"?"Hausse":d==="down"?"Baisse":"Stabilité";
-const sign=d=>d==="up"?"up":d==="down"?"down":"flat";
-$("today").textContent=new Date().toLocaleDateString("fr-CA",{dateStyle:"full"});
-
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
- document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
- b.classList.add("active");
- ["dashboard","new","journal","evaluation"].forEach(p=>$(p).classList.toggle("hidden",p!==b.dataset.page));
- render();
-}));
-
-$("forecastForm").addEventListener("submit",e=>{
- e.preventDefault();
- const probs=[+$("pup").value,+$("pflat").value,+$("pdown").value];
- if(probs.some(x=>x<0||x>100)||probs.reduce((a,b)=>a+b,0)!==100){alert("Les probabilités doivent totaliser exactement 100 %.");return;}
- const now=new Date();
- const days=+$("horizon").value;
- const due=new Date(now);due.setDate(due.getDate()+days);
- forecasts.unshift({
-  id:crypto.randomUUID(),created:now.toISOString(),due:due.toISOString(),
-  asset:$("asset").value,horizon:days,reference:+$("reference").value,
-  direction:$("direction").value,variation:+$("variation").value,
-  confidence:+$("confidence").value,probabilities:probs,
-  thesis:$("thesis").value,source:$("source").value,
-  actual:null,actualVariation:null,correct:null
- });
- save();e.target.reset();$("confidence").value=60;
- alert("Prévision enregistrée !");
- document.querySelector('[data-page="dashboard"]').click();
-});
-
-function render(){
- const evaluated=forecasts.filter(f=>f.actual!==null);
- const correct=evaluated.filter(f=>f.correct).length;
- $("total").textContent=forecasts.length;
- $("evaluated").textContent=evaluated.length;
- $("accuracy").textContent=evaluated.length?Math.round(correct/evaluated.length*100)+"%":"—";
- $("pending").textContent=forecasts.length-evaluated.length;
- $("recent").innerHTML=forecasts.length?forecasts.slice(0,5).map(f=>`<p><b>${f.asset}</b> · ${f.horizon} jour(s) · <span class="${sign(f.direction)}">${dir(f.direction)}</span> · ${f.variation}% · échéance ${date(f.due)}</p>`).join(""):"Aucune prévision pour le moment.";
- $("journalRows").innerHTML=forecasts.map(f=>`<tr><td>${date(f.created)}</td><td>${f.asset}</td><td>${f.horizon} j</td><td>${fmt(f.reference)}</td><td class="${sign(f.direction)}">${dir(f.direction)}</td><td>${f.variation}%</td><td>${date(f.due)}</td><td>${f.actual===null?"En attente":"Évaluée"}</td></tr>`).join("");
- $("emptyJournal").classList.toggle("hidden",forecasts.length>0);
- const pending=forecasts.filter(f=>f.actual===null);
- $("evaluationList").innerHTML=pending.length?pending.map(f=>`<div class="stat" style="margin:12px 0"><b>${f.asset}</b> · ${f.horizon} jour(s) · échéance ${date(f.due)}<p class="muted">Valeur de départ : ${fmt(f.reference)} · prévision : ${f.variation}% (${dir(f.direction)})</p><label>Valeur réelle à l'échéance</label><input type="number" step="any" id="actual-${f.id}" placeholder="Saisir la valeur observée"><div class="actions"><button class="primary" onclick="evaluateForecast('${f.id}')">Enregistrer le résultat</button></div></div>`).join(""):"Aucune prévision à évaluer.";
- $("resultsRows").innerHTML=evaluated.map(f=>`<tr><td>${f.asset}</td><td>${f.horizon} j</td><td>${f.variation}%</td><td>${f.actualVariation.toFixed(3)}%</td><td class="${f.correct?'up':'down'}">${f.correct?"Réussie":"Non réussie"}</td></tr>`).join("");
+function showTab(id,button){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+button.classList.add('active');
 }
-function evaluateForecast(id){
- const f=forecasts.find(x=>x.id===id);
- const actual=+$("actual-"+id).value;
- if(!actual||actual<=0){alert("Entre une valeur réelle valide.");return;}
- const change=(actual-f.reference)/f.reference*100;
- const actualDir=change>0.15?"up":change< -0.15?"down":"flat";
- f.actual=actual;f.actualVariation=change;f.correct=f.direction===actualDir;
- save();render();alert("Résultat enregistré. Variation réelle : "+change.toFixed(3)+" %.");
-}
-$("export").addEventListener("click",()=>{
- const cols=["created","asset","horizon","reference","direction","variation","confidence","probabilities","thesis","source","due","actual","actualVariation","correct"];
- const rows=[cols.join(";"),...forecasts.map(f=>cols.map(k=>'"'+String(Array.isArray(f[k])?f[k].join(","):f[k]??"").replaceAll('"','""')+'"').join(";"))];
- const blob=new Blob(["\ufeff"+rows.join("\n")],{type:"text/csv;charset=utf-8"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="market-predictor.csv";a.click();URL.revokeObjectURL(a.href);
-});
-render();
 </script>
 </body>
 </html>
